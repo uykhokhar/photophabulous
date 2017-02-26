@@ -56,7 +56,7 @@ class Network {
                 print(json)
                 
                 // Cast JSON as an array of dictionaries
-                guard let allResults = json as? [[[String: AnyObject]]] else {
+                guard let allResults = json as? [String: AnyObject] else {
                     fatalError("We couldn't cast the JSON to an array of dictionaries")
                 }
                 
@@ -65,9 +65,9 @@ class Network {
                 
                 // Do some parsing here
                 
-                for resultSection in allResults {
-                    let jImages = resultSection["results"] as? [[String: AnyObject]]
-                    for entry in jImages {
+                let jImages = allResults["results"] as? [String: AnyObject]
+                
+                for entry in jImages! {
                     let tempDate = entry["date"] as? String
                     let tempCaption = entry["caption"] as? String
                     let tempImageURLString = entry["image_url"] as? String
@@ -75,8 +75,8 @@ class Network {
                     let tempImage = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: tempImageURLString!)
                     tempImagesArray.append(tempImage)
                 }
-                    
-                }
+                
+                
                 
                 print("*****        BEGIN PARSING     ********")
                 var tempImagesArray : [GalleryItem] = []
