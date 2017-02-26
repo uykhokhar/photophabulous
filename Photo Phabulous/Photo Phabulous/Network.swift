@@ -8,7 +8,14 @@
 
 import Foundation
 
-class Networking {
+class Network {
+    
+    //Singleton
+    static let sharedInstance = Network()
+    private init() {}
+    
+    
+    var tempImages : [GalleryItem] = []
     
     
     
@@ -49,7 +56,7 @@ class Networking {
                 print(json)
                 
                 // Cast JSON as an array of dictionaries
-                guard let issues = json as? [[String: AnyObject]] else {
+                guard let allResults = json as? [[[String: AnyObject]]] else {
                     fatalError("We couldn't cast the JSON to an array of dictionaries")
                 }
                 
@@ -58,23 +65,29 @@ class Networking {
                 
                 // Do some parsing here
                 
-                print("*****        BEGIN PARSING     ********")
-                var tempIssuesArray : [GalleryItem] = []
-                
-                for entry in issues {
-                    let url = entry["html_url"] as? String
-                    let title = entry["title"] as? String
-                    let userDic = entry["user"] as? [String: Any]
-                    let user = userDic?["login"] as? String
-                    let body = entry["body"] as? String
+                for resultSection in allResults {
+                    let jImages = resultSection["results"] as? [[String: AnyObject]]
+                    for entry in jImages {
+                    let tempDate = entry["date"] as? String
+                    let tempCaption = entry["caption"] as? String
+                    let tempImageURLString = entry["image_url"] as? String
                     
-                    let tempIssue = Issue(issueTitle: title!, gitUsername: user!, issueDate: date!, type: type, URL: url!, body: body!)
-                    tempIssuesArray.append(tempIssue)
+                    let tempImage = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: tempImageURLString!)
+                    tempImagesArray.append(tempImage)
+                }
+                    
                 }
                 
-                self.issuesArray = tempIssuesArray
+                print("*****        BEGIN PARSING     ********")
+                var tempImagesArray : [GalleryItem] = []
                 
-                completion(self.issuesArray)
+                
+                
+                
+                
+                self.tempImages = tempImagesArray
+                
+                completion(self.tempImages)
                 
                 
             } catch {

@@ -12,11 +12,11 @@ class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var indvImage: UIImageView!
     
-    
+    /*
     func setGalleryItem(item: GalleryItem){
         indvImage.image = UIImage(named: item.itemImage)
     }
-    
+    */
     
     
 }

@@ -12,12 +12,14 @@ private let reuseIdentifier = "PicCell"
 
 class PicCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout{
     
-    var galleryItems: [GalleryItem] = []
+    var galleryItems: [GalleryItem]? = []
     var selectedImage : UIImage? {
         willSet(image) {
             view.backgroundColor = UIColor(patternImage: image!)
         }
     }
+    
+    let userImageURL: String = "https://stachesandglasses.appspot.com/user/tabinks/json/"
     
     
     // MARK: IBActions
@@ -41,6 +43,18 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+        
+        Network.sharedInstance.getDataFromURL(urlString: userImageURL) {(galleryItems) in
+            
+            DispatchQueue.main.async {
+                // Anything in here is execute on the main thread
+                // You should reload your table here.
+                //tableView.reload()
+            }
+        
+        }
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
