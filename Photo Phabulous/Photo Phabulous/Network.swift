@@ -7,15 +7,17 @@
 //
 
 import Foundation
+import UIKit
 
-class Network {
+class SharedNetworking {
     
     //Singleton
-    static let sharedInstance = Network()
+    static let sharedInstance = SharedNetworking()
     private init() {}
     
-    
-    var tempImages : [GalleryItem] = []
+    let urlImageSuffix = GalleryItem.userURLStringImageSuffix
+    var tempImagesData : [GalleryItem] = []
+    var tempImage : UIImage?
     
     
     
@@ -56,7 +58,7 @@ class Network {
                 print(json)
                 
                 // Cast JSON as an array of dictionaries
-                guard let allResults = json as? [String: AnyObject] else {
+                guard let allResults = json as? [String: Any] else {
                     fatalError("We couldn't cast the JSON to an array of dictionaries")
                 }
                 
@@ -65,29 +67,41 @@ class Network {
                 
                 // Do some parsing here
                 
-                let jImages = allResults["results"] as? [String: AnyObject]
+                var tempGalleryItemsArray : [GalleryItem] = []
+                
+                print("*****        BEGIN PARSING     ********")
+                
+                let jImages = allResults["results"] as? [[String: Any]]
                 
                 for entry in jImages! {
                     let tempDate = entry["date"] as? String
                     let tempCaption = entry["caption"] as? String
                     let tempImageURLString = entry["image_url"] as? String
                     
-                    let tempImage = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: tempImageURLString!)
-                    tempImagesArray.append(tempImage)
+                    //download picture
+                    // ATTRIBUTION: https://www.raywenderlich.com/136159/uicollectionview-tutorial-getting-started
+                    let completeURLString = GalleryItem.userURLStringImageSuffix + tempImageURLString!
+                    print("url: \(completeURLString)")
+//                    let pictureURL = URL(string: completeURLString)!
+//                    let imageData = try? Data(contentsOf: pictureURL as URL)
+//                    let tempImage = UIImage(data: imageData!)
+                    //TODO PROCESS IMAGE SO ONLY SMALL VERSION IS DOWNLOADED.
+                    
+                    
+                    
+                    let tempGalleryItem = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: completeURLString)
+                    self.getImageFromURL(galleryItem: tempGalleryItem)
+                    
+                    
+                    
+                    tempGalleryItemsArray.append(tempGalleryItem)
+  
                 }
+                //is it after all the images have downloaded?
+                print("DOWNLOAD TASK COMPLETED")
+                self.tempImagesData = tempGalleryItemsArray
                 
-                
-                
-                print("*****        BEGIN PARSING     ********")
-                var tempImagesArray : [GalleryItem] = []
-                
-                
-                
-                
-                
-                self.tempImages = tempImagesArray
-                
-                completion(self.tempImages)
+                completion(self.tempImagesData)
                 
                 
             } catch {
@@ -99,6 +113,49 @@ class Network {
         task.resume()
     }
 
+    
+    // ATTRIBUTION: http://stackoverflow.com/questions/39813497/swift-3-display-image-from-url
+    //QUESTION: Since this is already on a differnet thread, no need to put code into completion block and download picture on a different thread?? which thread is this working on?
+    
+    func getImageFromURL(galleryItem: GalleryItem) {
+        
+        
+        let pictureURL = URL(string: galleryItem.imageURLString)!
+        
+        // Creating a session object with the default configuration.
+        // You can read more about it here https://developer.apple.com/reference/foundation/urlsessionconfiguration
+        let session = URLSession(configuration: .default)
+        
+        // Define a download task. The download task will download the contents of the URL as a Data object and then you can do what you wish with that data.
+        let downloadPicTask = session.dataTask(with: pictureURL) { (data, response, error) in
+            // The download has finished.
+            if let e = error {
+                print("Error downloading picture: \(e)")
+            } else {
+                // No errors found.
+                // It would be weird if we didn't have a response, so check for that too.
+                if let res = response as? HTTPURLResponse {
+                    print("Downloaded picture with response code \(res.statusCode)")
+                    if let imageData = data {
+                        // Finally convert that Data into an image and do what you wish with it.
+                        print(imageData)
+                        let downloadedImage = UIImage(data: imageData)
+                        galleryItem.image = downloadedImage
+                        print("image set to tempImage")
+                        
+                    } else {
+                        print("Couldn't get image: Image is nil")
+                    }
+                } else {
+                    print("Couldn't get response code for some reason")
+                }
+            }
+        }
+        
+        downloadPicTask.resume()
+    }
+    
+    
     
     
 }

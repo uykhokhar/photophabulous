@@ -19,7 +19,8 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         }
     }
     
-    let userImageURL: String = "https://stachesandglasses.appspot.com/user/tabinks/json/"
+    let userURL = GalleryItem.userURLString
+    fileprivate let itemsPerRow: CGFloat = 3
     
     
     // MARK: IBActions
@@ -44,12 +45,18 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
 
         // Do any additional setup after loading the view.
         
-        Network.sharedInstance.getDataFromURL(urlString: userImageURL) {(galleryItems) in
+        SharedNetworking.sharedInstance.getDataFromURL(urlString: userURL) {(galleryItems) in
             
             DispatchQueue.main.async {
                 // Anything in here is execute on the main thread
                 // You should reload your table here.
                 //tableView.reload()
+                print("COUNT OF GALLERY ITEMS: \(galleryItems.count)")
+                print("***DISPATCH QUEUE CALLED****")
+                
+                //Does this reload data?
+                self.collectionView?.reloadData()
+                
             }
         
         }
@@ -82,16 +89,51 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 6
+        print("number of items \(galleryItems!.count)")
+        return galleryItems!.count
+        
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
     
         // Configure the cell
+        cell.backgroundColor = UIColor.black
     
         return cell
     }
+    
+    
+    
+    // MARK: UICollectionViewDelegateFlowLayout
+    
+//    //1
+//    func collectionView(_ collectionView: UICollectionView,
+//                        layout collectionViewLayout: UICollectionViewLayout,
+//                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        //2
+//        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+//        let availableWidth = view.frame.width - paddingSpace
+//        let widthPerItem = availableWidth / itemsPerRow
+//        
+//        return CGSize(width: widthPerItem, height: widthPerItem)
+//    }
+//    
+//    //3
+//    func collectionView(_ collectionView: UICollectionView,
+//                        layout collectionViewLayout: UICollectionViewLayout,
+//                        insetForSectionAt section: Int) -> UIEdgeInsets {
+//        return sectionInsets
+//    }
+//    
+//    // 4
+//    func collectionView(_ collectionView: UICollectionView,
+//                        layout collectionViewLayout: UICollectionViewLayout,
+//                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        return sectionInsets.left
+//    }
+    
+    
 
     // MARK: UICollectionViewDelegate
 
@@ -143,6 +185,5 @@ extension PicCollectionViewController : UIImagePickerControllerDelegate, UINavig
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
-    
-    
 }
+

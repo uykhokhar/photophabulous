@@ -7,12 +7,17 @@
 //
 
 import Foundation
+import UIKit
 
 class GalleryItem {
-
+    
+    static let userURLString : String = "https://stachesandglasses.appspot.com/user/tabinks/json/"
+    static let userURLStringImageSuffix : String = "https://stachesandglasses.appspot.com/"
+    
     var date : String
     var caption: String
     var imageURLString: String
+    var image : UIImage?
     
     
     // ATTRIBUTION: http://swiftiostutorials.com/tutorial-using-uicollectionview-uicollectionviewflowlayout/ 
@@ -20,6 +25,10 @@ class GalleryItem {
         self.date = date
         self.caption = caption
         self.imageURLString = imageURLString
+    }
+    
+    func setImage(image: UIImage) {
+        self.image = image
     }
     
     
