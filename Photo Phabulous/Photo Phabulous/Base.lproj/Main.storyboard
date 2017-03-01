@@ -14,7 +14,7 @@
         <scene sceneID="Fta-7l-VQV">
             <objects>
                 <collectionViewController id="L3i-L2-2Gl" customClass="PicCollectionViewController" customModule="Photo_Phabulous" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="8tK-Yf-pow">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="8tK-Yf-pow">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -32,19 +32,19 @@
                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FDC-Tu-sY5">
-                                            <rect key="frame" x="18" y="18" width="64" height="64"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FDC-Tu-sY5">
+                                            <rect key="frame" x="8" y="8" width="84" height="84"/>
                                         </imageView>
                                     </subviews>
                                 </view>
                                 <color key="backgroundColor" red="0.52660477502584735" green="1" blue="0.35520443224341303" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="FDC-Tu-sY5" firstAttribute="leading" secondItem="W5d-wN-bJo" secondAttribute="leadingMargin" constant="10" id="7wo-7K-Zhs"/>
-                                    <constraint firstAttribute="trailingMargin" secondItem="FDC-Tu-sY5" secondAttribute="trailing" constant="10" id="LvB-a9-tcx"/>
+                                    <constraint firstItem="FDC-Tu-sY5" firstAttribute="leading" secondItem="W5d-wN-bJo" secondAttribute="leadingMargin" id="7wo-7K-Zhs"/>
+                                    <constraint firstAttribute="trailingMargin" secondItem="FDC-Tu-sY5" secondAttribute="trailing" id="LvB-a9-tcx"/>
                                     <constraint firstItem="FDC-Tu-sY5" firstAttribute="centerX" secondItem="W5d-wN-bJo" secondAttribute="centerX" id="UAk-Gd-3gF"/>
                                     <constraint firstItem="FDC-Tu-sY5" firstAttribute="centerY" secondItem="W5d-wN-bJo" secondAttribute="centerY" id="mm9-jt-Bvt"/>
-                                    <constraint firstAttribute="bottomMargin" secondItem="FDC-Tu-sY5" secondAttribute="bottom" constant="10" id="uGh-zB-uls"/>
-                                    <constraint firstItem="FDC-Tu-sY5" firstAttribute="top" secondItem="W5d-wN-bJo" secondAttribute="topMargin" constant="10" id="uf3-Wj-7Lr"/>
+                                    <constraint firstAttribute="bottomMargin" secondItem="FDC-Tu-sY5" secondAttribute="bottom" id="uGh-zB-uls"/>
+                                    <constraint firstItem="FDC-Tu-sY5" firstAttribute="top" secondItem="W5d-wN-bJo" secondAttribute="topMargin" id="uf3-Wj-7Lr"/>
                                 </constraints>
                                 <size key="customSize" width="100" height="100"/>
                                 <connections>

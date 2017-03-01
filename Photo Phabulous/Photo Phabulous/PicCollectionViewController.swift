@@ -13,6 +13,7 @@ private let reuseIdentifier = "PicCell"
 class PicCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout{
     
     var galleryItems: [GalleryItem]? = []
+    
     var selectedImage : UIImage? {
         willSet(image) {
             view.backgroundColor = UIColor(patternImage: image!)
@@ -21,6 +22,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
     
     let userURL = GalleryItem.userURLString
     fileprivate let itemsPerRow: CGFloat = 3
+    fileprivate let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
     
     
     // MARK: IBActions
@@ -41,7 +43,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        self.collectionView!.register(CollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
         
@@ -51,10 +53,10 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
                 // Anything in here is execute on the main thread
                 // You should reload your table here.
                 //tableView.reload()
-                print("COUNT OF GALLERY ITEMS: \(galleryItems.count)")
+                self.galleryItems = galleryItems
+                print("COUNT OF GALLERY ITEMS: \(self.galleryItems?.count)")
                 print("***DISPATCH QUEUE CALLED****")
                 
-                //Does this reload data?
                 self.collectionView?.reloadData()
                 
             }
@@ -89,49 +91,49 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        print("number of items \(galleryItems!.count)")
-        return galleryItems!.count
-        
+        return self.galleryItems!.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionViewCell
     
         // Configure the cell
         cell.backgroundColor = UIColor.black
-    
+        let photo = galleryItems![indexPath.row]
+        cell.indvImage.image = photo.image
+        
         return cell
     }
     
     
     
     // MARK: UICollectionViewDelegateFlowLayout
+    // ATTRIBUTION: https://www.raywenderlich.com/136159/uicollectionview-tutorial-getting-started
+    //1 size of cell
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        //2 total padding space
+        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
+        let availableWidth = view.frame.width - paddingSpace
+        let widthPerItem = availableWidth / itemsPerRow
+        
+        return CGSize(width: widthPerItem, height: widthPerItem)
+    }
     
-//    //1
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        //2
-//        let paddingSpace = sectionInsets.left * (itemsPerRow + 1)
-//        let availableWidth = view.frame.width - paddingSpace
-//        let widthPerItem = availableWidth / itemsPerRow
-//        
-//        return CGSize(width: widthPerItem, height: widthPerItem)
-//    }
-//    
-//    //3
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        insetForSectionAt section: Int) -> UIEdgeInsets {
-//        return sectionInsets
-//    }
-//    
-//    // 4
-//    func collectionView(_ collectionView: UICollectionView,
-//                        layout collectionViewLayout: UICollectionViewLayout,
-//                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        return sectionInsets.left
-//    }
+    //3 spacing between cells
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
+    }
+    
+    // 4 spacing between the lines 
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
     
     
 

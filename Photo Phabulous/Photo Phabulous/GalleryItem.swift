@@ -17,7 +17,7 @@ class GalleryItem {
     var date : String
     var caption: String
     var imageURLString: String
-    var image : UIImage?
+    var image : UIImage? 
     
     
     // ATTRIBUTION: http://swiftiostutorials.com/tutorial-using-uicollectionview-uicollectionviewflowlayout/ 

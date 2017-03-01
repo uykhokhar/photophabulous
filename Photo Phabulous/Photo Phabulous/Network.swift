@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import ImageIO
 
 class SharedNetworking {
     
@@ -77,24 +78,34 @@ class SharedNetworking {
                     let tempDate = entry["date"] as? String
                     let tempCaption = entry["caption"] as? String
                     let tempImageURLString = entry["image_url"] as? String
+                    var completeURLString : String? = "https://stachesandglasses.appspot.com/image/                    ahNzfnN0YWNoZXNhbmRnbGFzc2Vzch4LEgRVc2VyIg d0YWJpbmtzDAsSBVBob3RvGNOGAww/"
                     
                     //download picture
                     // ATTRIBUTION: https://www.raywenderlich.com/136159/uicollectionview-tutorial-getting-started
-                    let completeURLString = GalleryItem.userURLStringImageSuffix + tempImageURLString!
+                    completeURLString = GalleryItem.userURLStringImageSuffix + tempImageURLString!
                     print("url: \(completeURLString)")
-//                    let pictureURL = URL(string: completeURLString)!
-//                    let imageData = try? Data(contentsOf: pictureURL as URL)
-//                    let tempImage = UIImage(data: imageData!)
-                    //TODO PROCESS IMAGE SO ONLY SMALL VERSION IS DOWNLOADED.
                     
                     
-                    
-                    let tempGalleryItem = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: completeURLString)
-                    self.getImageFromURL(galleryItem: tempGalleryItem)
+                    let tempGalleryItem = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: completeURLString!)
                     
                     
+                    guard let url = completeURLString,
+                        let imageData = try? Data(contentsOf: URL(string: url)!) else {
+                            break
+                    }
                     
-                    tempGalleryItemsArray.append(tempGalleryItem)
+                    //only append to tempGalleryItems if image can be obtained
+                    let imageToSet = UIImage(data: imageData)
+                    
+                    if (imageToSet != nil) {
+                        tempGalleryItem.image = imageToSet
+                        tempGalleryItemsArray.append(tempGalleryItem)
+                    }
+                    
+                    
+                    //If getting images asynchronously, call the getImageFromUrl method
+//                    self.getImageFromURL(galleryItem: tempGalleryItem)
+//                    tempGalleryItemsArray.append(tempGalleryItem)
   
                 }
                 //is it after all the images have downloaded?
@@ -154,8 +165,87 @@ class SharedNetworking {
         
         downloadPicTask.resume()
     }
+
     
     
+    func uploadRequest(user: NSString, image: UIImage, caption: NSString){
+        
+        let boundary = generateBoundaryString()
+        let scaledImage = resize(image: image, scale: 0.25)
+        let imageJPEGData = UIImageJPEGRepresentation(scaledImage,0.1)
+        
+        guard let imageData = imageJPEGData else {return}
+        
+        // Create the URL, the user should be unique
+        let url = NSURL(string: "http://stachesandglasses.appspot.com/post/\(user)/")
+        
+        // Create the request
+        let request = NSMutableURLRequest(url: url! as URL)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        // Set the type of the data being sent
+        let mimetype = "image/jpeg"
+        // This is not necessary
+        let fileName = "test.png"
+        
+        // Create data for the body
+        let body = NSMutableData()
+        body.append("\r\n--\(boundary)\r\n".data(using: String.Encoding.utf8)!)
+        
+        // Caption data
+        body.append("Content-Disposition:form-data; name=\"caption\"\r\n\r\n".data(using: String.Encoding.utf8)!)
+        body.append("CaptionText\r\n".data(using: String.Encoding.utf8)!)
+        
+        // Image data
+        body.append("--\(boundary)\r\n".data(using: String.Encoding.utf8)!)
+        body.append("Content-Disposition:form-data; name=\"image\"; filename=\"\(fileName)\"\r\n".data(using: String.Encoding.utf8)!)
+        body.append("Content-Type: \(mimetype)\r\n\r\n".data(using: String.Encoding.utf8)!)
+        body.append(imageData)
+        body.append("\r\n".data(using: String.Encoding.utf8)!)
+        
+        // Trailing boundary
+        body.append("--\(boundary)--\r\n".data(using: String.Encoding.utf8)!)
+        
+        // Set the body in the request
+        request.httpBody = body as Data
+        
+        // Create a data task
+        let session = URLSession.shared
+        let task = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
+            // Need more robust errory handling here
+            // 200 response is successful post
+            print(response!)
+            print(error ?? "nil")
+            
+            // The data returned is the update JSON list of all the images
+            let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
+            print(dataString ?? "nil")
+        }
+        
+        task.resume()
+    }
+    
+    /// A unique string that signifies breaks in the posted data
+    func generateBoundaryString() -> String {
+        return "Boundary-\(NSUUID().uuidString)"
+    }
+
+    
+    
+    func resize(image: UIImage, scale: CGFloat) -> UIImage {
+        let size = image.size.applying(CGAffineTransform(scaleX: scale,y: scale))
+        let hasAlpha = true
+        
+        // Automatically use scale factor of main screen
+        let scale: CGFloat = 0.0
+        
+        UIGraphicsBeginImageContextWithOptions(size, !hasAlpha, scale)
+        image.draw(in: CGRect(origin: CGPoint(x: 0,y :0), size: size))
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return scaledImage!
+    }
     
     
 }
