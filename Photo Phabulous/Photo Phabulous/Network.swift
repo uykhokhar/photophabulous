@@ -18,6 +18,7 @@ class SharedNetworking {
     
     let urlImageSuffix = GalleryItem.userURLStringImageSuffix
     var tempImagesData : [GalleryItem] = []
+    
     var tempImage : UIImage?
     
     
@@ -78,38 +79,19 @@ class SharedNetworking {
                     let tempDate = entry["date"] as? String
                     let tempCaption = entry["caption"] as? String
                     let tempImageURLString = entry["image_url"] as? String
-                    var completeURLString : String? = "https://stachesandglasses.appspot.com/image/                    ahNzfnN0YWNoZXNhbmRnbGFzc2Vzch4LEgRVc2VyIg d0YWJpbmtzDAsSBVBob3RvGNOGAww/"
+                    var completeURLString : String? 
                     
                     //download picture
                     // ATTRIBUTION: https://www.raywenderlich.com/136159/uicollectionview-tutorial-getting-started
                     completeURLString = GalleryItem.userURLStringImageSuffix + tempImageURLString!
-                    print("url: \(completeURLString)")
-                    
                     
                     let tempGalleryItem = GalleryItem(date: tempDate!, caption: tempCaption!, imageURLString: completeURLString!)
-                    
-                    
-                    guard let url = completeURLString,
-                        let imageData = try? Data(contentsOf: URL(string: url)!) else {
-                            break
-                    }
-                    
-                    //only append to tempGalleryItems if image can be obtained
-                    let imageToSet = UIImage(data: imageData)
-                    
-                    if (imageToSet != nil) {
-                        tempGalleryItem.image = imageToSet
-                        tempGalleryItemsArray.append(tempGalleryItem)
-                    }
-                    
-                    
-                    //If getting images asynchronously, call the getImageFromUrl method
-//                    self.getImageFromURL(galleryItem: tempGalleryItem)
-//                    tempGalleryItemsArray.append(tempGalleryItem)
+
+                    tempGalleryItemsArray.append(tempGalleryItem)
   
                 }
                 //is it after all the images have downloaded?
-                print("DOWNLOAD TASK COMPLETED")
+                print("JSON PARSING TASK COMPLETED")
                 self.tempImagesData = tempGalleryItemsArray
                 
                 completion(self.tempImagesData)
@@ -128,7 +110,7 @@ class SharedNetworking {
     // ATTRIBUTION: http://stackoverflow.com/questions/39813497/swift-3-display-image-from-url
     //QUESTION: Since this is already on a differnet thread, no need to put code into completion block and download picture on a different thread?? which thread is this working on?
     
-    func getImageFromURL(galleryItem: GalleryItem) {
+    func getImageFromURL(galleryItem: GalleryItem, completion: @escaping (UIImage) -> Void) {
         
         
         let pictureURL = URL(string: galleryItem.imageURLString)!
@@ -140,6 +122,8 @@ class SharedNetworking {
         // Define a download task. The download task will download the contents of the URL as a Data object and then you can do what you wish with that data.
         let downloadPicTask = session.dataTask(with: pictureURL) { (data, response, error) in
             // The download has finished.
+            var tempImage : UIImage?
+            
             if let e = error {
                 print("Error downloading picture: \(e)")
             } else {
@@ -150,8 +134,7 @@ class SharedNetworking {
                     if let imageData = data {
                         // Finally convert that Data into an image and do what you wish with it.
                         print(imageData)
-                        let downloadedImage = UIImage(data: imageData)
-                        galleryItem.image = downloadedImage
+                        tempImage = UIImage(data: imageData)
                         print("image set to tempImage")
                         
                     } else {
@@ -160,7 +143,20 @@ class SharedNetworking {
                 } else {
                     print("Couldn't get response code for some reason")
                 }
+                
+                
             }
+            
+            self.tempImage = tempImage
+            if (self.tempImage == nil){
+                print("self.tempImage is nil")
+            } else {
+                print("self.tempImage is not nil")
+            }
+            
+            
+            completion(self.tempImage!)
+            
         }
         
         downloadPicTask.resume()
@@ -177,7 +173,7 @@ class SharedNetworking {
         guard let imageData = imageJPEGData else {return}
         
         // Create the URL, the user should be unique
-        let url = NSURL(string: "http://stachesandglasses.appspot.com/post/\(user)/")
+        let url = NSURL(string: "https://stachesandglasses.appspot.com/post/\(user)/")
         
         // Create the request
         let request = NSMutableURLRequest(url: url! as URL)

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CB151F31E676D88000AC900 /* PhotoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB151F21E676D88000AC900 /* PhotoDetailViewController.swift */; };
 		680014751E62262900053DBB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680014741E62262900053DBB /* AppDelegate.swift */; };
 		6800147A1E62262900053DBB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 680014781E62262900053DBB /* Main.storyboard */; };
 		6800147C1E62262900053DBB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6800147B1E62262900053DBB /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1CB151F21E676D88000AC900 /* PhotoDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDetailViewController.swift; sourceTree = "<group>"; };
 		680014711E62262900053DBB /* Photo Phabulous.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Phabulous.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		680014741E62262900053DBB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		680014791E62262900053DBB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				6821BBF51E624CAD0073467F /* Network.swift */,
 				680014741E62262900053DBB /* AppDelegate.swift */,
 				680014781E62262900053DBB /* Main.storyboard */,
+				1CB151F21E676D88000AC900 /* PhotoDetailViewController.swift */,
 				680014881E62337200053DBB /* CollectionReusableView.swift */,
 				6800148A1E62339700053DBB /* CollectionViewCell.swift */,
 				680014861E622B4A00053DBB /* PicCollectionViewController.swift */,
@@ -173,6 +176,7 @@
 				6821BBF31E6249220073467F /* FlickrPhoto.swift in Sources */,
 				6821BBF21E6249220073467F /* Flickr.swift in Sources */,
 				680014751E62262900053DBB /* AppDelegate.swift in Sources */,
+				1CB151F31E676D88000AC900 /* PhotoDetailViewController.swift in Sources */,
 				6821BBF41E6249220073467F /* FlickrSearchResults.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,7 +11,7 @@ import UIKit
 
 class GalleryItem {
     
-    static let userURLString : String = "https://stachesandglasses.appspot.com/user/tabinks/json/"
+    static let userURLString : String = "https://stachesandglasses.appspot.com/user/ukhokhar/json/"
     static let userURLStringImageSuffix : String = "https://stachesandglasses.appspot.com/"
     
     var date : String
