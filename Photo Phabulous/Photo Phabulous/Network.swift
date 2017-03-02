@@ -135,6 +135,7 @@ class SharedNetworking {
                         // Finally convert that Data into an image and do what you wish with it.
                         print(imageData)
                         tempImage = UIImage(data: imageData)
+                        galleryItem.image = tempImage
                         print("image set to tempImage")
                         
                     } else {

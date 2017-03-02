@@ -134,7 +134,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         //get image from cache or get it from network call
         if let cachedVersion = cache.object(forKey: imageURLNSString) {
             // use the cached version
-            cell.indvImage.image = cachedVersion
+            // cell.indvImage.image = cachedVersion
         } else {
             // create it from scratch then store in the cache
             
@@ -151,7 +151,14 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
                     }
                     
                     self.cache.setObject(newImage, forKey: imageURLNSString)
-                    cell.indvImage.image = newImage
+                    
+                    
+                    //PROBLEM-------- THE IMAGE IS SET TO NIL
+                    
+                    cell.indvImage.image = cell.galleryItem?.image
+                    
+                    //cell.indvImage.image = newImage
+                    
                     
                     //turn network activity off
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
