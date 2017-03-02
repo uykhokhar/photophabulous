@@ -133,7 +133,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
                     //PROBLEM-------- THE IMAGE IS SET TO NIL
                     //REFACTOR CODE SO THAT ONLY UI REFRESH HAPPENS HERE
                     
-                    cell.indvImage.image = cell.galleryItem?.image
+                    //cell.indvImage.image = cell.galleryItem?.image
                     
                     //cell.indvImage.image = newImage
                     
