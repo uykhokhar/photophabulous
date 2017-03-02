@@ -50,24 +50,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
 
         // Do any additional setup after loading the view.
         
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        SharedNetworking.sharedInstance.getDataFromURL(urlString: userURL) {(galleryItems) in
-            
-            DispatchQueue.main.async {
-                // Anything in here is execute on the main thread
-                // You should reload your table here.
-                //tableView.reload()
-                self.galleryItems = galleryItems
-                print("COUNT OF GALLERY ITEMS: \(self.galleryItems?.count)")
-                print("***DISPATCH QUEUE CALLED****")
-                
-                self.collectionView?.reloadData()
-                
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
-        
-        }
         
         
     }
@@ -134,7 +117,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         //get image from cache or get it from network call
         if let cachedVersion = cache.object(forKey: imageURLNSString) {
             // use the cached version
-            // cell.indvImage.image = cachedVersion
+            cell.indvImage.image = cachedVersion
         } else {
             // create it from scratch then store in the cache
             
@@ -143,12 +126,6 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
             SharedNetworking.sharedInstance.getImageFromURL(galleryItem: cell.galleryItem!) {(newImage) in
                 
                 DispatchQueue.main.async {
-                    
-                    if (newImage == nil){
-                        print("dispatchqueue called with nil image")
-                    } else {
-                        print("newImage is not nil")
-                    }
                     
                     self.cache.setObject(newImage, forKey: imageURLNSString)
                     
@@ -173,11 +150,49 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         return cell
     }
     
+    // Refresh screen and throw error if data could not be retrieved. 
+    func reloadData(){
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        do {
+            try SharedNetworking.sharedInstance.getDataFromURL(urlString: userURL) {(galleryItems) in
+            
+            DispatchQueue.main.async {
+                // Anything in here is execute on the main thread
+                // You should reload your table here.
+                //tableView.reload()
+                self.galleryItems = galleryItems
+                print("COUNT OF GALLERY ITEMS: \(self.galleryItems?.count)")
+                print("***DISPATCH QUEUE CALLED****")
+                
+                self.collectionView?.reloadData()
+                
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                }
+            }
+            
+        } catch {
+            let alert = UIAlertController(title: "Connection Error", message: "Could not retrieve data from server", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+        
+
+    }
+    
+    
     
     func postData(image: UIImage){
-        SharedNetworking.sharedInstance.uploadRequest(user: user as NSString, image: image, caption: "testImage")
+        SharedNetworking.sharedInstance.uploadRequest(user: user as NSString, image: image, caption: "testImage") { () in
+            
+            DispatchQueue.main.async {
+                self.reloadData()
+            }
+        }
         
     }
+    
+    
     
     
     

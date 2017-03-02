@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 import ImageIO
 
+enum connectionError : Error {
+    case noData(message : String)
+}
+
 class SharedNetworking {
     
     //Singleton
@@ -23,11 +27,12 @@ class SharedNetworking {
     
     
     
-    func getDataFromURL(urlString: String, completion: @escaping ([GalleryItem]) -> Void){
+    func getDataFromURL(urlString: String, completion: @escaping ([GalleryItem]) -> Void) throws {
         
         
         guard let url = NSURL(string: urlString) else {
-            fatalError("Unable to create NSURL from string")
+            throw connectionError.noData(message: "Unable to create NSURL from string")
+            //fatalError("Unable to create NSURL from string")
         }
         
         // Create a vanilla url session
@@ -165,7 +170,7 @@ class SharedNetworking {
 
     
     
-    func uploadRequest(user: NSString, image: UIImage, caption: NSString){
+    func uploadRequest(user: NSString, image: UIImage, caption: NSString, completion: () -> Void ){
         
         let boundary = generateBoundaryString()
         let scaledImage = resize(image: image, scale: 0.25)
