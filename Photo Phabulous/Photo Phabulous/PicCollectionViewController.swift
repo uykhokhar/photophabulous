@@ -50,7 +50,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
 
         // Do any additional setup after loading the view.
         
-        
+        reloadData()
         
         
     }
