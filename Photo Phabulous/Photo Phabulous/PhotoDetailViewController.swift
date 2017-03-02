@@ -33,11 +33,24 @@ class PhotoDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         self.navigationController?.hidesBarsOnTap = true
+        let shareBar: UIBarButtonItem = UIBarButtonItem.init(barButtonSystemItem:.action, target: self, action: #selector(PhotoDetailViewController.userDidTapShare))
+        
+        self.navigationItem.rightBarButtonItem = shareBar
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    // ATTRIBUTION: http://www.appcoda.com/social-framework-introduction/
+    func userDidTapShare() {
+        let activityViewController = UIActivityViewController(activityItems: [self.image], applicationActivities: nil)
+        
+        self.present(activityViewController, animated: true, completion: nil)
+        
     }
     
 

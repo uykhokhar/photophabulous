@@ -19,7 +19,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
     //push the image
     var selectedImage : UIImage? {
         willSet(image) {
-            SharedNetworking.sharedInstance.uploadRequest(user: user as NSString, image: image!, caption: "testImage")
+            postData(image: image!)
         }
     }
     
@@ -171,6 +171,12 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         
         
         return cell
+    }
+    
+    
+    func postData(image: UIImage){
+        SharedNetworking.sharedInstance.uploadRequest(user: user as NSString, image: image, caption: "testImage")
+        
     }
     
     
