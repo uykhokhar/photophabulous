@@ -46,9 +46,13 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(CollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        
+        // DO NOT CALL THIS UNLESS YOU HAVE NIB FILES
+        //self.collectionView!.register(CollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+        
+        
         
         reloadData()
         
@@ -106,44 +110,7 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
         // Configure the cell
         cell.backgroundColor = UIColor.black
         cell.galleryItem = galleryItems?[indexPath.row]
-        
-        // REFACTOR TO MAKE imageURLNSString MORE TYPE SAFE
-        var imageURLNSString : NSString = ""
-        if let imageURLString = cell.galleryItem?.imageURLString {
-            imageURLNSString = imageURLString as NSString
-        }
-        
-        
-        //get image from cache or get it from network call
-        if let cachedVersion = cache.object(forKey: imageURLNSString) {
-            // use the cached version
-            cell.indvImage.image = cachedVersion
-        } else {
-            // create it from scratch then store in the cache
-            
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            
-            SharedNetworking.sharedInstance.getImageFromURL(galleryItem: cell.galleryItem!) {(newImage) in
-                
-                DispatchQueue.main.async {
-                    
-                    self.cache.setObject(newImage, forKey: imageURLNSString)
-                    
-                    
-                    //PROBLEM-------- THE IMAGE IS SET TO NIL
-                    //REFACTOR CODE SO THAT ONLY UI REFRESH HAPPENS HERE
-                    
-                    //cell.indvImage.image = cell.galleryItem?.image
-                    
-                    //cell.indvImage.image = newImage
-                    
-                    
-                    //turn network activity off
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                }
-            }
-            
-        }
+        cell.indvImage.image = getImage(galleryItem: cell.galleryItem!)
         
         return cell
     }
@@ -187,6 +154,46 @@ class PicCollectionViewController: UICollectionViewController, UICollectionViewD
                 self.reloadData()
             }
         }
+        
+    }
+    
+    func getImage(galleryItem: GalleryItem?) -> UIImage?{
+        
+        var returnImage : UIImage?
+        
+        
+        // REFACTOR TO MAKE imageURLNSString MORE TYPE SAFE
+        var imageURLNSString : NSString = ""
+        if let imageURLString = galleryItem?.imageURLString {
+            imageURLNSString = imageURLString as NSString
+        }
+        
+        
+        if let cachedVersion = cache.object(forKey: imageURLNSString) {
+            // use the cached version
+            returnImage = cachedVersion
+        } else {
+            // create it from scratch then store in the cache
+            
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            
+            SharedNetworking.sharedInstance.getImageFromURL(galleryItem: galleryItem!) {(newImage) in
+                
+                DispatchQueue.main.async {
+                    
+                    self.cache.setObject(newImage, forKey: imageURLNSString)
+                    
+                    returnImage = newImage
+                    
+                    //turn network activity off
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    
+                }
+            }
+            
+        }
+        
+        return returnImage
         
     }
     

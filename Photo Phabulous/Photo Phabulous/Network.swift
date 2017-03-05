@@ -170,7 +170,7 @@ class SharedNetworking {
 
     
     
-    func uploadRequest(user: NSString, image: UIImage, caption: NSString, completion: () -> Void ){
+    func uploadRequest(user: NSString, image: UIImage, caption: NSString, completion: @escaping () -> Void ){
         
         let boundary = generateBoundaryString()
         let scaledImage = resize(image: image, scale: 0.25)
@@ -223,6 +223,8 @@ class SharedNetworking {
             // The data returned is the update JSON list of all the images
             let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
             print(dataString ?? "nil")
+            
+            completion()
         }
         
         task.resume()
